@@ -67,6 +67,7 @@
  #define TURN_CCW       4
  #define STANDSTILL     5
  #define START_POSITION 6
+ #define DANCING        7
 
 // library includes
 #include <Servo.h>
@@ -76,6 +77,7 @@ unsigned char movement_state;
 unsigned char movement_delay = 4;
 boolean active = false;
 boolean initialised = false;
+int dance_time = 0;
 
 int servoPins[] = {    // in order of servos(1 to 12)
   /*FLP*/ 12,  /*FRP*/ 13,  /*MLP*/ 8,  /*MRP*/ 9,  /*BLP*/ 4,  /*BRP*/ 5,
@@ -259,7 +261,6 @@ void setMovement(int movement){
 }
 
 void setPosition(int servo_position){
-  movement_state = servo_position;
   // lower all lift legs
   for(int n = 0; n < 12; n++){
     if(hexapod_servos[n].lift){
@@ -279,6 +280,7 @@ void setPosition(int servo_position){
   delay(60);
   // pan group1 legs to standstill position
   if(servo_position == STANDSTILL){
+    movement_state = STANDSTILL;
     // group1 lift, pan, drop
     for(int n = 0; n < 12; n++){
       if(hexapod_servos[n].pan & hexapod_servos[n].group1){
@@ -342,74 +344,89 @@ void setPosition(int servo_position){
 }
 
 void hexapod_dance(){
-  setPosition(STANDSTILL);
-  //lift group 1 legs
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group1) & (hexapod_servos[n].lift)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+  if(dance_time == 0){
+    setPosition(STANDSTILL);
+    movement_state = DANCING;
+  }
+  else if(dance_time < 360){
+    //lift group 1 legs
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group1) & (hexapod_servos[n].lift)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+      }
     }
   }
-  delay(360);
-  // wiggle
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group1) & (hexapod_servos[n].pan)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+  else if(dance_time < 540){
+    // wiggle
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group1) & (hexapod_servos[n].pan)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+      }
     }
   }
-  delay(180);
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group1) & (hexapod_servos[n].pan)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position - hexapod_servos[n].polarity*45);
+  else if(dance_time < 720){
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group1) & (hexapod_servos[n].pan)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position - hexapod_servos[n].polarity*45);
+      }
     }
   }
-  delay(180);
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group1) & (hexapod_servos[n].pan)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+  else if(dance_time < 900){
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group1) & (hexapod_servos[n].pan)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+      }
     }
   }
-  delay(180);
-  // lower group 1 legs
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group1) & (hexapod_servos[n].lift)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+  else if(dance_time < 1260){
+    // lower group 1 legs
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group1) & (hexapod_servos[n].lift)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+      }
     }
   }
-  delay(360);
-  
-   //lift group 2 legs
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group2) & (hexapod_servos[n].lift)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+  else if(dance_time < 1620){
+    //lift group 2 legs
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group2) & (hexapod_servos[n].lift)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+      }
     }
   }
-  delay(360);
-  // wiggle
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group2) & (hexapod_servos[n].pan)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+  else if(dance_time < 1800){
+    // wiggle
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group2) & (hexapod_servos[n].pan)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position + hexapod_servos[n].polarity*45);
+      }
     }
   }
-  delay(180);
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group2) & (hexapod_servos[n].pan)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position - hexapod_servos[n].polarity*45);
+  else if(dance_time < 1980){
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group2) & (hexapod_servos[n].pan)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position - hexapod_servos[n].polarity*45);
+      }
     }
   }
-  delay(180);
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group2) & (hexapod_servos[n].pan)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+  else if(dance_time < 2160){
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group2) & (hexapod_servos[n].pan)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+      }
     }
   }
-  delay(180);
-  // lower group 1 legs
-  for(int n = 0; n < 12; n++){
-    if((hexapod_servos[n].group2) & (hexapod_servos[n].lift)){
-      hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+  else if(dance_time < 2520){
+    // lower group 1 legs
+    for(int n = 0; n < 12; n++){
+      if((hexapod_servos[n].group2) & (hexapod_servos[n].lift)){
+        hexapod_servos[n].servo_write(hexapod_servos[n].default_position);
+      }
     }
   }
-  delay(360);
+  else{
+    dance_time = -1;
+  }
 }
 
 void setup() { 
@@ -418,20 +435,24 @@ void setup() {
   for(int n = 0; n < 12; n++){
     hexapod_servos[n].begin(n);
   }
-  Serial.println("Hexapod Robot MKII\n\nCommands:\n- p = pause\n- c = continue\n- s = standstill\n- f = forwards\n- b = backwards\n- r = turn right (CW)\n- l = turn left (CCW)\n- 0-9 = change speed\n");
+  Serial.println("Hexapod Robot MKII\n\nCommands:\n- p = pause\n- c = continue\n- s = standstill\n- f = forwards\n- b = backwards\n- r = turn right (CW)\n- l = turn left (CCW)\n- 0-9 = change speed\n- d = dance\n");
 } 
 
 void loop() {
-  while(1){
-    hexapod_dance();
-  }
   // block if not in active state
   if(active){
-    // continuously update the servos
-    for(int n = 0; n < 12 ; n++){
-      hexapod_servos[n].update();
+    if(movement_state != DANCING){
+      // continuously update the servos
+      for(int n = 0; n < 12 ; n++){
+        hexapod_servos[n].update();
+      }
+      delay(movement_delay);
     }
-    delay(movement_delay);
+    else{
+      hexapod_dance();
+      delay(1);
+      dance_time++;
+    }
   }
 }
 
@@ -472,14 +493,19 @@ void serialEvent(){
           break;
         }
         case 's':{
-          Serial.println("Standstill");
-          active = false;
-          setPosition(STANDSTILL);
-          break;
+          if(movement_state == STANDSTILL){
+            Serial.println("Error!! - Already at Standstill");
+          }
+          else{
+            Serial.println("Standstill");
+            active = false;
+            setPosition(STANDSTILL);
+          }
+          break;  
         }
         case 'f':{
           if(movement_state == FORWARDS){
-            Serial.print("Error!! - Already moving forwards");
+            Serial.println("Error!! - Already moving forwards");
           }
           else{
             Serial.println("Forwards");
@@ -492,7 +518,7 @@ void serialEvent(){
         }
         case 'b':{
           if(movement_state == BACKWARDS){
-            Serial.print("Error!! - Already moving forwards");
+            Serial.println("Error!! - Already moving forwards");
           }
           else{
             Serial.println("Backwards");
@@ -505,7 +531,7 @@ void serialEvent(){
         }
         case 'r':{
           if(movement_state == TURN_CW){
-            Serial.print("Error!! - Already turning right (CW)");
+            Serial.println("Error!! - Already turning right (CW)");
           }
           else{
             Serial.println("Turn Right (CW)");
@@ -518,13 +544,26 @@ void serialEvent(){
         }
         case 'l':{
           if(movement_state == TURN_CCW){
-            Serial.print("Error!! - Already turning left (CCW)");
+            Serial.println("Error!! - Already turning left (CCW)");
           }
           else{
             Serial.println("Turn Left (CCW)");
             active = false;
             setMovement(TURN_CCW);
             setPosition(START_POSITION);
+            active = true;
+          }
+          break;
+        } 
+        case 'd':{
+          if(movement_state == DANCING){
+            Serial.println("Error!! - Already Dancing");
+          }
+          else{
+            Serial.println("Dance");
+            active = false;
+            setMovement(DANCING);
+            dance_time = 0;
             active = true;
           }
           break;
