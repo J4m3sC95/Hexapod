@@ -77,7 +77,12 @@ unsigned char movement_state;
 unsigned char movement_delay = 4;
 boolean active = false;
 boolean initialised = false;
+<<<<<<< HEAD
+unsigned char right_fraction = 0;
+unsigned char left_fraction = 0;
+=======
 int dance_time = 0;
+>>>>>>> 8660aea00827dd6d77e9238ae1a052402e654e37
 
 int servoPins[] = {    // in order of servos(1 to 12)
   /*FLP*/ 12,  /*FRP*/ 13,  /*MLP*/ 8,  /*MRP*/ 9,  /*BLP*/ 4,  /*BRP*/ 5,
@@ -104,6 +109,7 @@ class hexapod{
   unsigned char servo_number;
   int servo_angle;
   char angle_increment;
+  unsigned int temp_angle;
     
   Servo servo;
 
@@ -203,7 +209,25 @@ class hexapod{
   // servo update member function
   void update(){
     if(pan){
-      servo.write(default_position + polarity*(servo_angle - (PAN_MOVEMENT_ANGLE/2))); 
+      // default write function for no variable angle movement
+      //servo.write(default_position + polarity*(servo_angle - (PAN_MOVEMENT_ANGLE/2)));
+
+/***********************************************************************************************************************************************************/
+/* THIS NEEDS TESTING!!!  **********************************************************************************************************************************/
+/***********************************************************************************************************************************************************/
+      // Variable angle movement:
+      if(left){
+        angle_fraction = left_fraction;
+      }
+      else if(right){
+        angle_fraction = right_fraction;
+      }
+      temp_angle = default_position + ((angle_fraction*polarity*(servo_angle - (PAN_MOVEMENT_ANGLE/2)))/100);
+      servo.write(temp_angle);
+/***********************************************************************************************************************************************************/
+/***********************************************************************************************************************************************************/
+/***********************************************************************************************************************************************************/
+      
       // increment the index variable and update the servo to the corresponding position as described in the servo position array
       servo_angle+= angle_increment;
       if((servo_angle == PAN_MOVEMENT_ANGLE)|(servo_angle == 0)){
