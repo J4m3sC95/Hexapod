@@ -77,12 +77,10 @@ unsigned char movement_state;
 unsigned char movement_delay = 4;
 boolean active = false;
 boolean initialised = false;
-<<<<<<< HEAD
 unsigned char right_fraction = 0;
 unsigned char left_fraction = 0;
-=======
 int dance_time = 0;
->>>>>>> 8660aea00827dd6d77e9238ae1a052402e654e37
+
 
 int servoPins[] = {    // in order of servos(1 to 12)
   /*FLP*/ 12,  /*FRP*/ 13,  /*MLP*/ 8,  /*MRP*/ 9,  /*BLP*/ 4,  /*BRP*/ 5,
@@ -109,8 +107,9 @@ class hexapod{
   unsigned char servo_number;
   int servo_angle;
   char angle_increment;
+  unsigned char angle_fraction;
   unsigned int temp_angle;
-    
+  
   Servo servo;
 
   public:
