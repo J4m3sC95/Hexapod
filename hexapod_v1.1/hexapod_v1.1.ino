@@ -77,8 +77,11 @@ unsigned char movement_state;
 unsigned char movement_delay = 4;
 boolean active = false;
 boolean initialised = false;
-unsigned char right_fraction = 0;
-unsigned char left_fraction = 0;
+/*
+// variable movement angle fractions (out of 10)
+unsigned char right_fraction = ;
+unsigned char left_fraction = 10;
+*/
 int dance_time = 0;
 
 
@@ -209,11 +212,11 @@ class hexapod{
   void update(){
     if(pan){
       // default write function for no variable angle movement
-      //servo.write(default_position + polarity*(servo_angle - (PAN_MOVEMENT_ANGLE/2)));
+      servo.write(default_position + polarity*(servo_angle - (PAN_MOVEMENT_ANGLE/2)));
 
 /***********************************************************************************************************************************************************/
-/* THIS NEEDS TESTING!!!  **********************************************************************************************************************************/
-/***********************************************************************************************************************************************************/
+/* Variable Angle Movement**********************************************************************************************************************************/
+/***********************************************************************************************************************************************************
       // Variable angle movement:
       if(left){
         angle_fraction = left_fraction;
@@ -221,7 +224,7 @@ class hexapod{
       else if(right){
         angle_fraction = right_fraction;
       }
-      temp_angle = default_position + ((angle_fraction*polarity*(servo_angle - (PAN_MOVEMENT_ANGLE/2)))/100);
+      temp_angle = default_position + ((angle_fraction*polarity*(servo_angle - (PAN_MOVEMENT_ANGLE/2)))/10);
       servo.write(temp_angle);
 /***********************************************************************************************************************************************************/
 /***********************************************************************************************************************************************************/
