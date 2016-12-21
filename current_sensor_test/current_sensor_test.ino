@@ -1,7 +1,7 @@
 float data;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(250000);
 }
 
 void loop() {
@@ -11,6 +11,7 @@ void loop() {
   //Serial.print(",\tcurrent: ");
   //Serial.print(", ");
   Serial.print(((512-data)*5)/(0.185*1024));
-  Serial.println("");
-  //Serial.println("A");
+  Serial.print(",");
+  Serial.println(millis());
+  //Serial.println("");
 }

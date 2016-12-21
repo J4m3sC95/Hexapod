@@ -2,18 +2,11 @@
  * Version 1.1 removes array functionality from code to make it nicer (it wasnt really needed)
  * 
  * Servo Testing sketch for new code design of hexapod
- * structure:
- *  - Interrupt triggered by the millis timer (timer 0 i think)
- *        - ISR updates the position of the servo
  *  - Use a class to control/update the servos
  *        - Initialiser to setup variables, input = pin number and phase shift
- *        - Setup function to setup the servo (and detach??)
+ *        - Setup function to setup the servo
  *        - function to put servo into starting position
  *        - Update function to update the servo position depending on the current time
- *  - Need to test with servo to create an array of positions which when gone through
- *      at 1 millis intervals (or other time period) results in smooth (as poss) motion
- *      - will need to measure speed of the servo movement
- *      - use excel to generate some data to use on servos
  *  - Extra functionality:
  *      - Ability to control the speed of the servos/walking
  *      - fowards/backwards/turning motions
